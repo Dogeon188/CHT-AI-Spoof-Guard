@@ -1,10 +1,13 @@
 from fastapi import APIRouter, HTTPException
 
+from .models import SpoofDetectRequest, SpoofDetectResponse, TextImageRelationRequest, TextImageRelationResponse
+
+
 router = APIRouter()
 
 
 @router.get("/spoof_detect", name="Image Spoof Detection")
-def spoof_detect():
+async def spoof_detect(body: SpoofDetectRequest) -> SpoofDetectResponse:
     """Detect AI spoof of a given image"""
 
     # TODO: Get the image from the request
@@ -14,8 +17,8 @@ def spoof_detect():
     raise HTTPException(status_code=501, detail="Not implemented yet")
 
 
-@router.get("/text_image_relation", name="Text Image Relationship Calculation")
-def text_image_relation():
+@ router.get("/text_image_relation", name="Text Image Relationship Calculation")
+async def text_image_relation(body: TextImageRelationRequest) -> TextImageRelationResponse:
     """Calculate the (evidential) relationship between a given text and image"""
 
     # TODO: Get the text and image from the request
