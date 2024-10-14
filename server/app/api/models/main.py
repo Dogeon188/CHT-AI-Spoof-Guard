@@ -46,6 +46,9 @@ class QueryResponseBase(BaseModel):
         processing_time: Processing time of the request"""
     uuid: UUID = Field(
         description="Unique identifier of the request session, in UUID v4 format")
+    model: str = Field(
+        description="Name of the model used for processing",
+        example="v0")
     processing_time: ProcessingTime
 
 
