@@ -35,3 +35,7 @@ class DummyTextImageRelationModel(TextImageRelationModel):
 
 
 _register_model("dummy", DummyTextImageRelationModel())
+
+
+# TODO
+# Add actual model(s) here

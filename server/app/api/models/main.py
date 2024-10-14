@@ -86,6 +86,6 @@ class TextImageRelationResponse(QueryResponseBase):
     result: Literal["related", "unrelated"] = Field(
         description="Result of the AI text-image relationship calculation, either 'related' or 'unrelated'",
         example="related")
-    score: float = Field(
+    confidence: float = Field(
         description="Score of the relationship, between 0 and 1",
         example=0.9)
