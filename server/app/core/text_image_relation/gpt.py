@@ -5,9 +5,13 @@ from .base import TextImageRelationModel, TextImageRelationResult
 from app.api.models import ImageModel
 
 
+with open("api_key.txt", "r") as f:
+    api_key = f.read()
+
+
 class GPTTextImageRelationModel(TextImageRelationModel):
     def __init__(self):
-        self.api_key = 'sk-7k11uzyaH2tRK8DrySl7pdSmIb9IP_u960zmNwH9szT3BlbkFJ2K8sULiZnWRTsb-phLPhFn2c7fmarfhuzmBg3pEQYA'
+        self.api_key = api_key
         self.client = OpenAI(api_key=self.api_key)
         self.threshold = 0.5
 
@@ -39,7 +43,7 @@ class GPTTextImageRelationModel(TextImageRelationModel):
                 messages=messages,
                 max_tokens=300
             )
-            print(response)
+            print(response.choices[0].message.content)
 
         except Exception as e:
             raise RuntimeError("Failed to get GPT response.")
