@@ -2,11 +2,14 @@
     "manifest_version": 3,
     "name": "CHT-AI-SPOOF-GUARD",
     "version": "0.0.1",
-    "permissions": ["scripting", "activeTab", "tabs"],
+    "permissions": ["scripting", "activeTab", "tabs", "storage"],
     "content_scripts" : [  
         {  
             "matches" : ["<all_urls>"],  
             "js" : ["content.js"]
         }  
-    ]
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
 }
