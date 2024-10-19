@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Spoof Detection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .droparea {
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        #img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            max-height: 400px;
+        }
+
+        #result {
+            margin-top: 50px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Spoof Detection Test</h1>
+    <form id="form">
+        <input type="file" name="image" accept="image/*" required style="display: none;">
+        <div class="droparea" ondrop="onDrop(event)" ondragover="event.preventDefault()">Drop image here</div>
+        <button type="submit">Submit</button>
+    </form>
+    <div style="height: 400px;">
+        <img src="" alt="" id="img">
+    </div>
+    <div id="result">
+        <h2>Result</h2>
+        <p>
+            <span>Result:</span>
+            <span id="result-text"></span>
+        </p>
+        <p>
+            <span>Confidence:</span>
+            <span id="result-score"></span>
+        </p>
+        <p>
+            <span>Time elapsed (ms):</span>
+            <span id="result-time"></span>
+        </p>
+    </div>
+    <script>
+        function onDrop(event) {
+            event.preventDefault();
+            var img_data = event.dataTransfer.files[0];
+            document.querySelector('input[type=file]').files = event.dataTransfer.files;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('img').src = e.target.result;
+            };
+            reader.readAsDataURL(img_data);
+        }
+        document.getElementById('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var img_data = document.querySelector('input[type=file]').files[0];
+            // read file to data url
+            var reader = new FileReader();
+            reader.onload = async function (e) {
+                var dataUrl = e.target.result;
+                var formData = JSON.stringify({
+                    'image': dataUrl,
+                    'model': 'univfd',
+                    "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                });
+                res = await fetch('http://localhost:8086/spoof_detect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: formData,
+                })
+                const data = await res.json();
+                if (!res.ok) {
+                    console.error('Error:', data['detail']);
+                    return;
+                }
+                document.getElementById('result-text').innerText = data['result'];
+                document.getElementById('result-score').innerText = data['confidence'];
+                document.getElementById('result-time').innerText = data['processing_time']['duration_ms'];
+            };
+            reader.readAsDataURL(img_data);
+        });
+    </script>
+</body>
