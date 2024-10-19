@@ -7,7 +7,7 @@ ARG_HOST = --host $(HOST_NAME) --port $(HOST_PORT)
 
 install:
 	conda env create -f environment.yml
-	conda activate aiguard
+	conda activate aiguard_env
 
 update:
 	conda env update -f environment.yml
