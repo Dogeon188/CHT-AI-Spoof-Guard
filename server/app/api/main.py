@@ -2,18 +2,10 @@ from fastapi import APIRouter, HTTPException
 from time import time
 
 from .models import SpoofDetectRequest, SpoofDetectResponse, TextImageRelationRequest, TextImageRelationResponse, ScrapeRequest, ScrapeResponse
-from app.core import spoof_detect_models, text_image_relation_models, ScrapeModel
+from app.core import spoof_detect_models, text_image_relation_models
 
 
 router = APIRouter()
-
-
-@router.post('/scrape')
-async def scrape(body: ScrapeRequest) -> ScrapeResponse:
-    url = body.url
-    content = ScrapeModel(url)
-
-    return content
 
 
 @router.get("/spoof_detect/models", name="List Image Spoof Detection Models")
