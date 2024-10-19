@@ -1,5 +1,5 @@
 import torch
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from .UniversalFakeDetect.models.clip_models import CLIPModel
 import os
 from urllib.request import urlopen
@@ -44,17 +44,21 @@ class Univfd(SpoofDetectModel):
         # with tempfile.NamedTemporaryFile() as temp:
         #     temp.write(image)
         #     temp.seek(0)
-        with urlopen(image) as temp:
-            data = temp.read()
-            image = Image.open(BytesIO(data))
-            prob = self.inference(image)
-            result = 'spoof' if prob > 0.5 else 'real'
-            print(f"result: {result}, prob: {prob}")
-            confidence = (prob - 0.5) * 2 if result == 'spoof' else (0.5 - prob) * 2
-            return SpoofDetectResult(
-                result=result,
-                confidence=confidence
-            )
+        try:
+            with urlopen(image) as temp:
+                data = temp.read()
+                image = Image.open(BytesIO(data))
+                prob = self.inference(image)
+                result = 'spoof' if prob > 0.5 else 'real'
+                confidence = (prob - 0.5) * 2 if result == 'spoof' else (0.5 - prob) * 2
+                return SpoofDetectResult(
+                    result=result,
+                    confidence=confidence
+                )
+        except UnidentifiedImageError:
+            raise Exception("Unsupported or invalid image format")
+        except Exception as e:
+            raise Exception("Unknown exception occured")
 
 
 # if __name__ == '__main__':

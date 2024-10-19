@@ -100,28 +100,28 @@
             var img_data = document.querySelector('input[type=file]').files[0];
             // read file to data url
             var reader = new FileReader();
-            reader.onload = function (e) {
+            reader.onload = async function (e) {
                 var dataUrl = e.target.result;
                 var formData = JSON.stringify({
                     'image': dataUrl,
                     'model': 'univfd',
                     "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                 });
-                fetch('http://localhost:8086/spoof_detect', {
+                res = await fetch('http://localhost:8086/spoof_detect', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: formData,
-                }).then(function (response) {
-                    return response.json();
-                }).then(function (data) {
-                    document.getElementById('result-text').innerText = data['result'];
-                    document.getElementById('result-score').innerText = data['confidence'];
-                    document.getElementById('result-time').innerText = data['processing_time']['duration_ms'];
-                }).catch(function (error) {
-                    console.error('Error:', error);
-                });
+                })
+                const data = await res.json();
+                if (!res.ok) {
+                    console.error('Error:', data['detail']);
+                    return;
+                }
+                document.getElementById('result-text').innerText = data['result'];
+                document.getElementById('result-score').innerText = data['confidence'];
+                document.getElementById('result-time').innerText = data['processing_time']['duration_ms'];
             };
             reader.readAsDataURL(img_data);
         });
