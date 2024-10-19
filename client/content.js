@@ -9,8 +9,6 @@ document.querySelector("div.story").querySelectorAll("p").forEach(async (p, inde
             let src = img.getAttribute("src");
             let textContent = text.innerText;
 
-            
-
             if (src && textContent) {
                 console.log("Image Source:", src);
                 console.log("Text Content:", textContent);
@@ -46,16 +44,16 @@ document.querySelector("div.story").querySelectorAll("p").forEach(async (p, inde
                     if (spoofResponse.ok && relationResponse.ok) {
                         const spoofData = await spoofResponse.json();
                         const relationData = await relationResponse.json();
-                        console.log("Spoof Detection Response:", spoofData);
-                        console.log("Text-Image Relation Response:", relationData);
 
                         let newDiv = document.createElement("div");
                         newDiv.style.backgroundColor = "lightblue";
-                        newDiv.style.padding = "10px";
-                        newDiv.style.marginTop = "10px";
-                        newDiv.textContent = `Detected content: \nSpoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}\nText-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}`;
-
-                        // 插入新的 div 到 img 后面
+                        newDiv.innerHTML = `
+                            <strong>Detected content:</strong><br>
+                            Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
+                            Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
+                            `;
+                    
+                        // 插入新的 div
                         img.parentNode.insertBefore(newDiv, img.nextSibling);
                     } else {
                         if (!spoofResponse.ok) {
@@ -70,55 +68,6 @@ document.querySelector("div.story").querySelectorAll("p").forEach(async (p, inde
                     console.error("Error occurred while fetching data:", error);
                 });
             }
-        }
-    }
-});
-
-document.querySelector("div.story").querySelectorAll("p.no_margin").forEach(async p => {
-    let img = p.querySelector("img");
-    let text = p.querySelector("strong");
-
-    if (img && text) {
-        let src = img.getAttribute("src");
-        let textContent = text.textContent;
-
-        if (src && textContent) {
-            // console.log("src",src,"textContent",textContent);
-            // const spoof = await fetch("http://localhost:8086/spoof_detect", {
-            //     method: "POST",
-            //     mode: "cors",
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         "image": src,
-            //         "uuid": crypto.randomUUID(),
-            //         "model": ""
-            //     })
-            // });
-
-            // const relation = await fetch("http://localhost:8086/text_image_relation", {
-            //     method: "POST",
-            //     mode: "cors",
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         "text": text,
-            //         "image": src,
-            //         "uuid": crypto.randomUUID(),
-            //         "model": ""
-            //     })
-            // });
-
-            // if (spoof && relation) {
-            //     let newDiv = document.createElement("div");
-            //     newDiv.style.backgroundColor = "lightblue";
-            //     newDiv.textContent = "Detected content: " + textContent;
-
-            //     // 插入新的 div 到 img 后面
-            //     img.parentNode.insertBefore(newDiv, img.nextSibling);
-            // }
         }
     }
 });
