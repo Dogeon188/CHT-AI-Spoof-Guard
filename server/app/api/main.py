@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from time import time
 
-from .models import SpoofDetectRequest, SpoofDetectResponse, TextImageRelationRequest, TextImageRelationResponse, ScrapeRequest, ScrapeResponse
+from .models import SpoofDetectRequest, SpoofDetectResponse, TextImageRelationRequest, TextImageRelationResponse
 from app.core import spoof_detect_models, text_image_relation_models
 
 
