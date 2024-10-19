@@ -3,24 +3,39 @@ const relationModel = "dummy"
 
 function requestSpoof(src, textContent) {
     const spoofBody = JSON.stringify({
-        "uuid": crypto.randomUUID(),
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "model": spoofModel,
         "image": src,
     });
 
     console.log("Spoof Detection Request:", spoofBody);
 
-    const spoofPromise = fetch('http://localhost:8086/text_image_relation', {
+    // const spoofPromise = fetch('http://localhost:8086/spoof_detect', {
+    //     method: 'POST',
+    //     mode: "no-cors",
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     // body: spoofBody
+    //     body: "{}"
+    // });
+
+    var formData = JSON.stringify({
+        'image': "dataUrl",
+        'model': 'dummy',
+        "uuid": crypto.randomUUID()
+    });
+    var spoofPromise = fetch('http://localhost:8086/spoof_detect', {
         method: 'POST',
         mode: "no-cors",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: spoofBody
-    });
+        body: formData,
+    })
 
     const relationBody = JSON.stringify({
-        "uuid": crypto.randomUUID(),
+        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "model": relationModel,
         "image": src,
         "text": textContent,
@@ -45,20 +60,19 @@ function siblingCount(node) {
     return node.parentNode.children.length
 }
 
-
-function main() {
-    const article = document.querySelector("article")
-    if (!article) return
-    article.querySelectorAll("img").forEach(async img => {
-        console.log("img", img)
-        const altText = img.alt
-        let container = img
-        while (siblingCount(container) === 1) {
-            container = container.parentNode
-        }
-        console.log("container", container)
-    })
-}
+// function main() {
+//     const article = document.querySelector("article")
+//     if (!article) return
+//     article.querySelectorAll("img").forEach(async img => {
+//         console.log("img", img)
+//         const altText = img.alt
+//         let container = img
+//         while (siblingCount(container) === 1) {
+//             container = container.parentNode
+//         }
+//         console.log("container", container)
+//     })
+// }
 
 function main_ettoday() {
     document.querySelectorAll("div.story p").forEach(async (p, index, pElements) => {

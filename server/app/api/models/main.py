@@ -1,5 +1,6 @@
+import json
 from typing import Literal
-from pydantic import BaseModel, Field, AfterValidator
+from pydantic import BaseModel, Field, AfterValidator, model_validator
 from uuid import UUID
 from typing import Annotated
 
@@ -37,6 +38,13 @@ class QueryRequestBase(BaseModel):
     model: str = Field(
         description="Name of the model to be used for processing",
         example="v0")
+    
+    @model_validator(mode='before')
+    @classmethod
+    def validate_to_json(cls, value):
+        if isinstance(value, str) or isinstance(value, bytes):
+            return cls(**json.loads(value))
+        return value
 
 
 class QueryResponseBase(BaseModel):
