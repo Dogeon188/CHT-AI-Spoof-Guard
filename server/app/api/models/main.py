@@ -6,12 +6,14 @@ from typing import Annotated
 
 # Base models for request and response
 
-
 ImageModel = Annotated[
     str,
     Field(
-        description="Image data in data URL format",
-        example="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBYRXhpZgAATU0AKgAAAAgAA1IBAAABAAEAAAgAA1..."),
+        description="Image data in (data) URL string format",
+        examples=[
+            "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBYRXhpZgAATU0AKgAAAAgAA1IBAAABAAEAAAgAA1...",
+            "https://example.com/image.jpg"
+            ]),
     AfterValidator(lambda v: v.startswith("data:image/"))
 ]
 

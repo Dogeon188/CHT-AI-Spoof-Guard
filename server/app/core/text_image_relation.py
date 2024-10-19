@@ -1,12 +1,18 @@
 from abc import ABC, abstractmethod
-from time import time
+from dataclasses import dataclass
 
-from app.api.models import TextImageRelationRequest, TextImageRelationResponse
+from app.api.models import ImageModel
+
+
+@dataclass
+class TextImageRelationResult:
+    result: str
+    confidence: float
 
 
 class TextImageRelationModel(ABC):
     @abstractmethod
-    def reference(self, req: TextImageRelationRequest) -> TextImageRelationResponse:
+    def reference(self, text: str, image: ImageModel) -> TextImageRelationResult:
         raise NotImplementedError
 
 
@@ -19,19 +25,9 @@ def _register_model(model_id: str, model: TextImageRelationModel) -> TextImageRe
 
 
 class DummyTextImageRelationModel(TextImageRelationModel):
-    def reference(self, req: TextImageRelationRequest) -> TextImageRelationResponse:
-        current_time = time()
-
-        return TextImageRelationResponse(
-            uuid=req.uuid,
-            model=req.model,
-            processing_time={
-                "start": current_time,
-                "end": current_time,
-                "duration_ms": 0},
-            result="related",
-            confidence=0.9
-        )
+    def reference(self, text: str, image: ImageModel) -> TextImageRelationResult:
+        # Do processing here
+        return TextImageRelationResult(result="related", confidence=0.9)
 
 
 _register_model("dummy", DummyTextImageRelationModel())

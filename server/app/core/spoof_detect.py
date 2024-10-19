@@ -1,12 +1,18 @@
 from abc import ABC, abstractmethod
-from time import time
+from dataclasses import dataclass
 
-from app.api.models import SpoofDetectRequest, SpoofDetectResponse
+from app.api.models import ImageModel
+
+
+@dataclass
+class SpoofDetectResult:
+    result: str
+    confidence: float
 
 
 class SpoofDetectModel(ABC):
     @abstractmethod
-    def reference(self, req: SpoofDetectRequest) -> SpoofDetectResponse:
+    def reference(self, image: ImageModel) -> SpoofDetectResult:
         raise NotImplementedError
 
 
@@ -19,19 +25,9 @@ def _register_model(model_id: str, model: SpoofDetectModel) -> SpoofDetectModel:
 
 
 class DummySpoofDetectModel(SpoofDetectModel):
-    def reference(self, req: SpoofDetectRequest) -> SpoofDetectResponse:
-        current_time = time()
-
-        return SpoofDetectResponse(
-            uuid=req.uuid,
-            model=req.model,
-            processing_time={
-                "start": current_time,
-                "end": current_time,
-                "duration_ms": 0},
-            result="real",
-            confidence=0.9
-        )
+    def reference(self, image: ImageModel) -> SpoofDetectResult:
+        # Do processing here
+        return SpoofDetectResult(result="real", confidence=0.9)
 
 
 _register_model("dummy", DummySpoofDetectModel())

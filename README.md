@@ -25,7 +25,7 @@ This project was developed as part of the [2024 Meichu Hackathon](https://meichu
 Listed in alphabetical order.
 
 - 張以寧 Chang, Yi-Ning
-- 廖幃萱 Liao, Wei-Xuan
+- 廖幃萱 Liao, Wei-Syuan
 - 李文婷 Lee, Wen-Ting
-- 賴姿紜 Lai, Zi-Yun
+- 賴姿妘 Lai, Zi-Yun
 - 毛柏毅 Mao, Bo-Yi
