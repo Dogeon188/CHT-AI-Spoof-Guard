@@ -5,6 +5,7 @@ dependencies:
   - python==3.10
   - pip==24.2
   - pip:
+    - pydantic==2.9.2
     - requests==2.31.0
     - connexion==3.0.0
     - connexion[flask]
