@@ -8,7 +8,7 @@ chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     };
   
     // 使用 fetch 發送 POST 請求給後端
-    fetch('http://localhost:5000/core/scrape', {
+    fetch('http://localhost:8086', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
