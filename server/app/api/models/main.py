@@ -13,8 +13,7 @@ ImageModel = Annotated[
         examples=[
             "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBYRXhpZgAATU0AKgAAAAgAA1IBAAABAAEAAAgAA1...",
             "https://example.com/image.jpg"
-            ]),
-    AfterValidator(lambda v: v.startswith("data:image/"))
+            ])
 ]
 
 
