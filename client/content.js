@@ -2,54 +2,29 @@ const spoofModel = "dummy"
 const relationModel = "dummy"
 
 function requestSpoof(src, textContent) {
-    const spoofBody = JSON.stringify({
-        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "model": spoofModel,
-        "image": src,
-    });
-
-    console.log("Spoof Detection Request:", spoofBody);
-
-    // const spoofPromise = fetch('http://localhost:8086/spoof_detect', {
-    //     method: 'POST',
-    //     mode: "no-cors",
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     // body: spoofBody
-    //     body: "{}"
-    // });
-
-    var formData = JSON.stringify({
-        'image': "dataUrl",
-        'model': 'dummy',
-        "uuid": crypto.randomUUID()
-    });
-    var spoofPromise = fetch('http://localhost:8086/spoof_detect', {
+    const spoofPromise = fetch('http://localhost:8086/spoof_detect', {
         method: 'POST',
-        mode: "no-cors",
         headers: {
             'Content-Type': 'application/json'
         },
-        body: formData,
-    })
-
-    const relationBody = JSON.stringify({
-        "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "model": relationModel,
-        "image": src,
-        "text": textContent,
+        body: JSON.stringify({
+            "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "model": spoofModel,
+            "image": src,
+        })
     });
-
-    console.log("Text-Image Relation Request:", relationBody);
 
     const relationPromise = fetch("http://localhost:8086/text_image_relation", {
         method: "POST",
-        mode: "no-cors",
         headers: {
             'Content-type': 'application/json'
         },
-        body: relationBody
+        body: JSON.stringify({
+            "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "model": relationModel,
+            "image": src,
+            "text": textContent,
+        })
     });
 
     return Promise.all([spoofPromise, relationPromise]);
@@ -60,19 +35,19 @@ function siblingCount(node) {
     return node.parentNode.children.length
 }
 
-// function main() {
-//     const article = document.querySelector("article")
-//     if (!article) return
-//     article.querySelectorAll("img").forEach(async img => {
-//         console.log("img", img)
-//         const altText = img.alt
-//         let container = img
-//         while (siblingCount(container) === 1) {
-//             container = container.parentNode
-//         }
-//         console.log("container", container)
-//     })
-// }
+function main() {
+    const article = document.querySelector("article")
+    if (!article) return
+    article.querySelectorAll("img").forEach(async img => {
+        console.log("img", img)
+        const altText = img.alt
+        let container = img
+        while (siblingCount(container) === 1) {
+            container = container.parentNode
+        }
+        console.log("container", container)
+    })
+}
 
 function main_ettoday() {
     document.querySelectorAll("div.story p").forEach(async (p, index, pElements) => {
@@ -91,6 +66,8 @@ function main_ettoday() {
                     console.log("Text Content:", textContent);
 
                     requestSpoof(src, textContent).then(async ([spoofResponse, relationResponse]) => {
+                        console.log("Spoof Detection Response:", spoofResponse);
+                        console.log("Text-Image Relation Response:", relationResponse);
                         if (spoofResponse.ok && relationResponse.ok) {
                             const spoofData = await spoofResponse.json();
                             const relationData = await relationResponse.json();
