@@ -1,19 +1,18 @@
-from app.core.spoof_detect.base import SpoofDetectModel, SpoofDetectResult 
-import sys
-sys.path.append('../UniversalFakeDetect/')
+from .base import SpoofDetectModel, SpoofDetectResult 
 import torch
 from PIL import Image
-from models import get_model
+from UniversalFakeDetect.models.clip_models import CLIPModel
+import os
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class Univfd(SpoofDetectModel):
     def __init__(self):
-        self.model = get_model("CLIP:ViT-L/14")
+        self.model = CLIPModel("ViT-L/14")
         self.model = self.add_fc(self.model)
     
     def add_fc(self, model):
-        fc_weight = torch.load("./pretrained_weights/fc_weights.pth", map_location="cpu", weights_only=True)
+        fc_weight = torch.load("UniversalFakeDetect/pretrained_weights/fc_weights.pth", map_location="cpu", weights_only=True)
         model.fc.load_state_dict(fc_weight)
         model = model.eval()
         model = model.to(device)
@@ -34,8 +33,8 @@ class Univfd(SpoofDetectModel):
         out = out[0][0]
         return out
     
-    def reference(self) -> SpoofDetectResult:
-        image_path = './whichfaceisreal/0_real/10286.jpeg'
+    def reference(self):
+        image_path = 'UniversalFakeDetect/whichfaceisreal/0_real/10286.jpeg'
         prob = self.inference(image_path)
         result = 'fake' if prob > 0.5 else 'real'
         print(f'result = {result}, confidence = {prob}')
