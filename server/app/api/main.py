@@ -31,21 +31,26 @@ async def spoof_detect(body: SpoofDetectRequest) -> SpoofDetectResponse:
     image_url = body.image
 
     # Use the AI model to detect spoof
-    start_time = time()
-    res = model.reference(image=image_url)
-    end_time = time()
+    try:
+        start_time = time()
+        res = model.reference(image=image_url)
+        end_time = time()
 
-    # Return the result
-    return SpoofDetectResponse(
-        uuid=body.uuid,
-        model=body.model,
-        processing_time={
-            "start": start_time,
-            "end": end_time,
-            "duration_ms": (end_time - start_time) * 1000},
-        result=res.result,
-        confidence=res.confidence
-    )
+        # Return the result
+        return SpoofDetectResponse(
+            uuid=body.uuid,
+            model=body.model,
+            processing_time={
+                "start": start_time,
+                "end": end_time,
+                "duration_ms": (end_time - start_time) * 1000},
+            result=res.result,
+            confidence=res.confidence
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e))
 
 
 @router.get("/text_image_relation/models", name="List Text Image Relationship Models")
