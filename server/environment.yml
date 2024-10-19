@@ -4,6 +4,9 @@ channels:
 dependencies:
   - python==3.10
   - pip==24.2
+  - pytorch==2.3.0
+  - torchvision=0.18.1
+  - pillow==10.4.0
   - pip:
     - pydantic==2.9.2
     - requests==2.31.0
@@ -14,3 +17,4 @@ dependencies:
     - a2wsgi==1.10.6
     - fastapi==0.111.0
     - pyjwt==2.8.0
+    - torchvision==
