@@ -1,4 +1,4 @@
-from .main import SpoofDetectRequest, SpoofDetectResponse, TextImageRelationRequest, TextImageRelationResponse, ImageModel
+from .main import SpoofDetectRequest, SpoofDetectResponse, TextImageRelationRequest, TextImageRelationResponse, ImageModel, ScrapeRequest, ScrapeResponse
 
 __all__ = [
     "SpoofDetectRequest",
@@ -6,4 +6,6 @@ __all__ = [
     "TextImageRelationRequest",
     "TextImageRelationResponse",
     "ImageModel",
+    "ScrapeRequest",
+    "ScrapeResponse"
 ]

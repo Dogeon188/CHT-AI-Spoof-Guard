@@ -1,10 +1,21 @@
-# 導入 模組(module) 
 import requests 
-# 導入 BeautifulSoup 模組(module)：解析HTML 語法工具
-import bs4
+from bs4 import BeautifulSoup
 
-URL = ""
-# 設定Header與Cookie
-my_headers = {'cookie': 'over18=1;'}
-# 發送get 請求 到 ptt 八卦版
-response = requests.get(URL, headers = my_headers)
+def ScrapeModel(url):
+    # list: ("alt": str, "src": str)
+    content = []
+
+    res = requests.get(url)
+    soup = BeautifulSoup(res.content, "lxml")
+    soup = soup.find("div", class_="story")
+    for a in soup.find_all("p"):
+        for i in a.find_all("img"):
+            if i.get("alt") == "":
+                continue
+            alt = i.get("alt")
+            print(f"alt: {alt}")
+            src = i.get("src")
+            print(f"src: {src}")
+            content.append({"alt": alt, "src": src})
+
+    return content

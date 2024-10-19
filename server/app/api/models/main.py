@@ -91,3 +91,12 @@ class TextImageRelationResponse(QueryResponseBase):
     confidence: float = Field(
         description="Score of the relationship, between 0 and 1",
         example=0.9)
+    
+class ScrapeRequest(BaseModel):
+    url: str
+
+class ScrapeResponse(BaseModel):
+    "Response class for scrape"
+    results: list = Field(
+        description = "Result of scraping current news"
+    )
