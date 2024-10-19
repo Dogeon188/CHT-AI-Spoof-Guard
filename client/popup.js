@@ -4,6 +4,7 @@ var apiUrlInput = document.getElementById('api-url');
 
 async function loadModels(apiurl) {
     const spoof_models = await (await fetch(`${apiurl}/spoof_detect/models`)).json();
+    spoofSelect.innerHTML = '';
     for (var i = 0; i < spoof_models.length; i++) {
         var option = document.createElement('option');
         option.text = spoof_models[i];
@@ -11,6 +12,7 @@ async function loadModels(apiurl) {
     }
 
     const tir_models = await (await fetch(`${apiurl}/text_image_relation/models`)).json();
+    tirSelect.innerHTML = '';
     for (var i = 0; i < tir_models.length; i++) {
         var option = document.createElement('option');
         option.text = tir_models[i];

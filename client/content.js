@@ -1,8 +1,9 @@
-const spoofModel = "dummy"
-const relationModel = "dummy"
+let spoofModel = "dummy"
+let relationModel = "dummy"
+let apiurl = "http://localhost:8086"
 
 function requestSpoof(src, textContent) {
-    const spoofPromise = fetch('http://localhost:8086/spoof_detect', {
+    const spoofPromise = fetch(`${apiurl}/spoof_detect`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -14,7 +15,7 @@ function requestSpoof(src, textContent) {
         })
     });
 
-    const relationPromise = fetch("http://localhost:8086/text_image_relation", {
+    const relationPromise = fetch(`${apiurl}/text_image_relation`, {
         method: "POST",
         headers: {
             'Content-type': 'application/json'
@@ -39,13 +40,50 @@ function main() {
     const article = document.querySelector("article")
     if (!article) return
     article.querySelectorAll("img").forEach(async img => {
-        console.log("img", img)
-        const altText = img.alt
+        if (!img.checkVisibility()) return
+
+        // iteratively find the container of the image
         let container = img
         while (siblingCount(container) === 1) {
             container = container.parentNode
         }
-        console.log("container", container)
+
+        // get text of prev/next sibling of container
+        let text = ""
+        if (container.previousElementSibling) {
+            text += container.previousElementSibling.innerText + "\n"
+        }
+        if (container.nextElementSibling) {
+            text += container.nextElementSibling.innerText + "\n"
+        }
+        if (img.alt) {
+            text += img.alt
+        }
+        console.log("text", text)
+
+        const response = await requestSpoof(img.src, text)
+        if (!response[0].ok) {
+            console.error("Failed to fetch spoof detection response.")
+            return
+        }
+        if (!response[1].ok) {
+            console.error("Failed to fetch text-image relation response.")
+            return
+        }
+
+        const spoofData = await response[0].json()
+        const relationData = await response[1].json()
+        console.log("spoofData", spoofData)
+        console.log("relationData", relationData)
+
+        let newDiv = document.createElement("div")
+        newDiv.style.backgroundColor = "lightblue"
+        newDiv.innerHTML = `
+            <strong>Detected content:</strong><br>
+            Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
+            Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
+        `
+        img.parentNode.insertBefore(newDiv, img.nextSibling)
     })
 }
 
@@ -100,7 +138,10 @@ function main_ettoday() {
     });
 }
 
-
-console.clear()
-// main()
-main_ettoday()
+chrome.storage.sync.get(['spoof', 'tir', 'apiurl'], async function (result) {
+    spoofModel = result.spoof;
+    relationModel = result.tir;
+    apiurl = result.apiurl;
+    main()
+    // main_ettoday();
+});
