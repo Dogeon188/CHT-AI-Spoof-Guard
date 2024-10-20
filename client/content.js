@@ -42,6 +42,10 @@ function main() {
     article.querySelectorAll("img").forEach(async img => {
         if (!img.checkVisibility()) return
 
+        let newDiv = insertNode()
+
+        img.parentNode.insertBefore(newDiv, img.nextSibling)
+
         // iteratively find the container of the image
         let container = img
         while (siblingCount(container) === 1) {
@@ -76,25 +80,62 @@ function main() {
         console.log("spoofData", spoofData)
         console.log("relationData", relationData)
 
-        let newDiv = document.createElement("div")
-        newDiv.style.backgroundColor = "lightblue"
-        newDiv.innerHTML = `
-            <strong>Detected content:</strong><br>
-            Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
-            Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
-        `
-        img.parentNode.insertBefore(newDiv, img.nextSibling)
+        img.parentNode.replaceChild(replaceNode([spoofData, relationData]), newDiv)
     })
 }
 
-function insertNotif(ctx) {
-    const [spoofData, relationData] = ctx;
+function insertNode() {
     let newDiv = document.createElement("div");
     newDiv.style.backgroundColor = "lightblue";
+    newDiv.classList.add("spoof-relation");
     newDiv.innerHTML = `
-    <strong>Detected content:</strong><br>
-    Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
-    Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
+    <div class="spoof-title">
+    <div class="spoof-spinner spoof-icon"></div>
+    <strong>Loading...</strong>
+    </div>
+    `;
+    return newDiv;
+}
+
+function replaceNode(ctx) {
+    const [spoofData, relationData] = ctx;
+
+    let newDiv = document.createElement("div");
+    newDiv.classList.add("spoof-relation");
+
+    let msg = "";
+    let displayIcon = "";
+    const gradColorStr = "linear-gradient(90deg, {color} 0%, {color}cc 60%, transparent 100%)"
+
+    if (spoofData.result == "spoof") {
+        if (relationData.result == "related") {
+            msg = "Watch out!";
+            // newDiv.style.backgroundColor = "#ff1573";
+            newDiv.style.background = gradColorStr.replace(/{color}/g, "#ff1573");
+            newDiv.style.color = "#f0f0f0";
+            displayIcon = "⚠️";
+        }
+        else {
+            msg = "AI generated";
+            newDiv.style.background = gradColorStr.replace(/{color}/g, "#fff2c3");
+            displayIcon = "🤖";
+        }
+    }
+    else {
+        msg = "Don't worry :)";
+        displayIcon = "👍";
+        newDiv.style.background = gradColorStr.replace(/{color}/g, "#add8e6");
+    }
+
+    newDiv.innerHTML = `
+    <div class="spoof-title">
+    <div class="spoof-icon">${displayIcon}</div>
+    <strong>${msg}</strong>
+    </div>
+    <div style="flex-grow:1;"></div>
+    <div>
+    ${spoofData.result == "spoof" ? "Spoof" : "Real"} (${Math.floor(spoofData.confidence * 100)}% sure), ${relationData.result == "related" ? "Related" : "Unrelated"} (${Math.floor(relationData.confidence * 100)}% sure)<br>
+    <div>
     `;
     return newDiv;
 }

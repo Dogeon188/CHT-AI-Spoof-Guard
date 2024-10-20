@@ -43,7 +43,6 @@ class GPTTextImageRelationModel(TextImageRelationModel):
                 messages=messages,
                 max_tokens=300
             )
-            print(response.choices[0].message.content)
 
         except Exception as e:
             raise RuntimeError("Failed to get GPT response.")
