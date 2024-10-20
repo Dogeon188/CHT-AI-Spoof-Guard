@@ -10,14 +10,18 @@ from io import BytesIO
 import os
 import glob
 
-from DIRE.utils import get_network, to_cuda
+from .DIRE.utils import get_network, to_cuda
 from .base import SpoofDetectModel, SpoofDetectResult  # Ensure proper import paths
 
 # Set the device (GPU if available, else CPU)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+
 class DIRE(SpoofDetectModel):
     def __init__(self, model_path="DIRE/lsun_adm.pth", arch='resnet50', aug_norm=True):
+        cur_dir = os.path.dirname(__file__)
+        model_path = os.path.join(
+            cur_dir, model_path)
         """Initialize the model, load weights, and set up image transformations."""
         self.model = self.load_model(arch, model_path)
         self.aug_norm = aug_norm
@@ -45,27 +49,28 @@ class DIRE(SpoofDetectModel):
             transforms.ToTensor(),
         ])
 
-    def preprocess_image(self, image_path):
+    def preprocess_image(self, image):
         """Load and preprocess an image for model inference."""
-        image = Image.open(image_path).convert('RGB')
+        image = image.convert('RGB')
         img_tensor = self.transform(image)
 
         if self.aug_norm:
-            img_tensor = TF.normalize(img_tensor, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            img_tensor = TF.normalize(
+                img_tensor, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
         return img_tensor.unsqueeze(0).to(device)  # Add batch dimension
 
-    def inference(self, image_path):
+    def inference(self, image):
         """Run inference on a single image and return the result."""
-        img_tensor = self.preprocess_image(image_path)
+        img_tensor = self.preprocess_image(image)
 
         with torch.no_grad():
             prob = self.model(img_tensor).sigmoid().item()
 
         print(f"Probability of being synthetic: {prob:.4f}")
-        confidence=prob
+        confidence = prob
         return confidence
-    
+
     def reference(self, image: ImageModel) -> SpoofDetectResult:
         try:
             with urlopen(image) as temp:
@@ -73,7 +78,8 @@ class DIRE(SpoofDetectModel):
                 image = Image.open(BytesIO(data))
                 prob = self.inference(image)
                 result = 'spoof' if prob > 0.5 else 'real'
-                confidence = (prob - 0.5) * 2 if result == 'spoof' else (0.5 - prob) * 2
+                confidence = (prob - 0.5) * \
+                    2 if result == 'spoof' else (0.5 - prob) * 2
                 return SpoofDetectResult(
                     result=result,
                     confidence=confidence
@@ -81,7 +87,7 @@ class DIRE(SpoofDetectModel):
         except UnidentifiedImageError:
             raise Exception("Unsupported or invalid image format")
         except Exception as e:
-            raise Exception("Unknown exception occured")
+            raise e
 
     def run_on_files(self, file_path):
         """Run inference on a single image or all images in a directory."""
