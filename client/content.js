@@ -88,7 +88,7 @@ function insertNode() {
     let newDiv = document.createElement("div");
     newDiv.style.backgroundColor = "lightblue";
     newDiv.style.width = "600px";
-    newDiv.style.height = "100px";
+    newDiv.style.height = "150px";
     newDiv.style.padding = "10px";
     newDiv.style.margin = "5px";
     newDiv.innerHTML = `
@@ -102,13 +102,20 @@ function replaceNode(ctx) {
     let newDiv = document.createElement("div");
     newDiv.style.backgroundColor = "lightblue";
     newDiv.style.width = "600px";
-    newDiv.style.height = "100px";
+    newDiv.style.height = "150px";
     newDiv.style.padding = "10px";
     newDiv.style.margin = "5px";
+    let msg = "";
+    if(spoofData.result == "fake"){
+        if(relationData.result == "related") msg = "Watch out !";
+        else msg = "AI generate";
+    }
+    else msg = "Don't worry";
     newDiv.innerHTML = `
     <strong>Detected content:</strong><br>
-    Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
-    Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
+    <strong>${msg}</strong><br>
+    Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
+    Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
     `;
     return newDiv;
 }
