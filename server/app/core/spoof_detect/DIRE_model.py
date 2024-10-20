@@ -14,7 +14,8 @@ from .DIRE.utils import get_network, to_cuda
 from .base import SpoofDetectModel, SpoofDetectResult  # Ensure proper import paths
 
 # Set the device (GPU if available, else CPU)
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available(
+) else 'mps' if torch.backends.mps.is_available() else 'cpu')
 
 
 class DIRE(SpoofDetectModel):

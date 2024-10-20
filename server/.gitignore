@@ -164,3 +164,11 @@ cython_debug/
 .DS_Store
 api_key.txt
 app/core/spoof_detect/DIRE/lsun_adm.pth
+*.pth
+
+# Ignore all image files
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
