@@ -7,6 +7,10 @@
 - Make
 - Conda
 
+### Pre-trained Model
+
+To download the pre-trained DIRE model, please refer to [this link](https://github.com/ZhendongWang6/DIRE).
+
 ### Steps
 
 - Run `make install` to install dependencies, or `make update` to update them
