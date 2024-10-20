@@ -8,7 +8,8 @@ from io import BytesIO
 from .base import SpoofDetectModel, SpoofDetectResult
 from app.api.models import ImageModel
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available(
+) else 'mps' if torch.backends.mps.is_available() else 'cpu')
 
 
 class Univfd(SpoofDetectModel):
@@ -47,7 +48,8 @@ class Univfd(SpoofDetectModel):
                 image = Image.open(BytesIO(data))
                 prob = self.inference(image)
                 result = 'spoof' if prob > 0.5 else 'real'
-                confidence = (prob - 0.5) * 2 if result == 'spoof' else (0.5 - prob) * 2
+                confidence = (prob - 0.5) * \
+                    2 if result == 'spoof' else (0.5 - prob) * 2
                 return SpoofDetectResult(
                     result=result,
                     confidence=confidence
