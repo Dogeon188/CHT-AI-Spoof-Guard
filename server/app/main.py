@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .api import router
 
 
+
 def main():
     app = FastAPI(
         title="AI Spoof Guard API",

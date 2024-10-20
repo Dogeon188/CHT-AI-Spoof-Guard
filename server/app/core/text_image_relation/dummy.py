@@ -8,4 +8,7 @@ from app.api.models import ImageModel
 class DummyTextImageRelationModel(TextImageRelationModel):
     def reference(self, text: str, image: ImageModel) -> TextImageRelationResult:
         # Do processing here
-        return TextImageRelationResult(result="related", confidence=0.9)
+        return TextImageRelationResult(
+            result="related",
+            confidence=0.9
+        )
