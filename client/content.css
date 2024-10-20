@@ -1,0 +1,44 @@
+.spoof-relation {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    border-radius: 0 0 10px 10px;
+}
+
+.spoof-relation strong {
+    font-size: 15px;
+}
+
+.spoof-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.spoof-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.spoof-spinner {
+    display: block;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-top: 3px solid #f0f0f0;
+    animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

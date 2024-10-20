@@ -1,4 +1,6 @@
 # You should copy this file and implement your own model
+from time import sleep
+from random import random
 
 from .base import TextImageRelationModel, TextImageRelationResult
 from app.api.models import ImageModel
@@ -8,7 +10,9 @@ from app.api.models import ImageModel
 class DummyTextImageRelationModel(TextImageRelationModel):
     def reference(self, text: str, image: ImageModel) -> TextImageRelationResult:
         # Do processing here
+        sleep(0.2)
+        confidence = random()
         return TextImageRelationResult(
-            result="related",
-            confidence=0.9
+            result="related" if confidence > 0.5 else "unrelated",
+            confidence=confidence
         )
