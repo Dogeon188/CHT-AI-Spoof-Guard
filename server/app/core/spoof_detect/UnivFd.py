@@ -41,9 +41,6 @@ class Univfd(SpoofDetectModel):
         return out
 
     def reference(self, image: ImageModel) -> SpoofDetectResult:
-        # with tempfile.NamedTemporaryFile() as temp:
-        #     temp.write(image)
-        #     temp.seek(0)
         try:
             with urlopen(image) as temp:
                 data = temp.read()
