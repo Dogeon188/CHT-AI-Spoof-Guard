@@ -42,6 +42,10 @@ function main() {
     article.querySelectorAll("img").forEach(async img => {
         if (!img.checkVisibility()) return
 
+        let newDiv = insertNode()
+
+        img.parentNode.insertBefore(newDiv, img.nextSibling)
+
         // iteratively find the container of the image
         let container = img
         while (siblingCount(container) === 1) {
@@ -76,21 +80,31 @@ function main() {
         console.log("spoofData", spoofData)
         console.log("relationData", relationData)
 
-        let newDiv = document.createElement("div")
-        newDiv.style.backgroundColor = "lightblue"
-        newDiv.innerHTML = `
-            <strong>Detected content:</strong><br>
-            Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
-            Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
-        `
-        img.parentNode.insertBefore(newDiv, img.nextSibling)
+        img.parentNode.replaceChild(replaceNode([spoofData, relationData]), newDiv)
     })
 }
 
-function insertNotif(ctx) {
+function insertNode() {
+    let newDiv = document.createElement("div");
+    newDiv.style.backgroundColor = "lightblue";
+    newDiv.style.width = "600px";
+    newDiv.style.height = "100px";
+    newDiv.style.padding = "10px";
+    newDiv.style.margin = "5px";
+    newDiv.innerHTML = `
+    <strong>Loading...</strong><br>
+    `;
+    return newDiv;
+}
+
+function replaceNode(ctx) {
     const [spoofData, relationData] = ctx;
     let newDiv = document.createElement("div");
     newDiv.style.backgroundColor = "lightblue";
+    newDiv.style.width = "600px";
+    newDiv.style.height = "100px";
+    newDiv.style.padding = "10px";
+    newDiv.style.margin = "5px";
     newDiv.innerHTML = `
     <strong>Detected content:</strong><br>
     Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
