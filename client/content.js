@@ -87,6 +87,18 @@ function main() {
     })
 }
 
+function insertNotif(ctx) {
+    const [spoofData, relationData] = ctx;
+    let newDiv = document.createElement("div");
+    newDiv.style.backgroundColor = "lightblue";
+    newDiv.innerHTML = `
+    <strong>Detected content:</strong><br>
+    Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
+    Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
+    `;
+    return newDiv;
+}
+
 function main_ettoday() {
     document.querySelectorAll("div.story p").forEach(async (p, index, pElements) => {
         let img = p.querySelector("img");
@@ -109,15 +121,7 @@ function main_ettoday() {
                         if (spoofResponse.ok && relationResponse.ok) {
                             const spoofData = await spoofResponse.json();
                             const relationData = await relationResponse.json();
-
-                            let newDiv = document.createElement("div");
-                            newDiv.style.backgroundColor = "lightblue";
-                            newDiv.innerHTML = `
-                            <strong>Detected content:</strong><br>
-                            Spoof Detection - Result: ${spoofData.result}, Confidence: ${spoofData.confidence}<br>
-                            Text-Image Relation - Result: ${relationData.result}, Confidence: ${relationData.confidence}
-                            `;
-
+                            let newDiv = insertNotif([spoofData, relationData]);
                             // 插入新的 div
                             img.parentNode.insertBefore(newDiv, img.nextSibling);
                         } else {
