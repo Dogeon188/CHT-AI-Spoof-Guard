@@ -1,6 +1,7 @@
 var spoofSelect = document.getElementById('spoof-select');
 var tirSelect = document.getElementById('tir-select');
 var apiUrlInput = document.getElementById('api-url');
+var enabledCheck = document.getElementById('enabled');
 
 async function loadModels(apiurl) {
     const spoof_models = await (await fetch(`${apiurl}/spoof_detect/models`)).json();
@@ -20,13 +21,15 @@ async function loadModels(apiurl) {
     }
 }
 
-chrome.storage.sync.get(['spoof', 'tir', 'apiurl'], async function (result) {
+chrome.storage.sync.get(['spoof', 'tir', 'apiurl', 'enabled'], async function (result) {
     const spoof = result.spoof;
     const tir = result.tir;
     const apiurl = result.apiurl;
+    const enabled = result.enabled;
 
     await loadModels(apiurl);
 
+    if (enabled) enabledCheck.checked = true;
     if (spoof) spoofSelect.value = spoof;
     if (tir) tirSelect.value = tir;
     if (apiurl) apiUrlInput.value = apiurl;
@@ -34,17 +37,17 @@ chrome.storage.sync.get(['spoof', 'tir', 'apiurl'], async function (result) {
 
 spoofSelect.addEventListener("input", function () {
     chrome.storage.sync.set({ 'spoof': spoofSelect.value });
-    console.log("spoof", spoofSelect.value);
 })
 
 tirSelect.addEventListener("input", function () {
     chrome.storage.sync.set({ 'tir': tirSelect.value });
-    console.log("tir", tirSelect.value);
 })
 
 apiUrlInput.addEventListener("input", function () {
     chrome.storage.sync.set({ 'apiurl': apiUrlInput.value });
     loadModels(apiUrlInput.value);
-    console.log("apiurl", apiUrlInput.value);
 })
 
+enabledCheck.addEventListener("input", function () {
+    chrome.storage.sync.set({ 'enabled': enabledCheck.checked });
+})

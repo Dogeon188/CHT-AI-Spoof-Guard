@@ -183,10 +183,12 @@ function main_ettoday() {
     });
 }
 
-chrome.storage.sync.get(['spoof', 'tir', 'apiurl'], async function (result) {
+chrome.storage.sync.get(['spoof', 'tir', 'apiurl', 'enabled'], async function (result) {
     spoofModel = result.spoof;
     relationModel = result.tir;
     apiurl = result.apiurl;
-    main()
+    if (result.enabled) {
+        main()
+    }
     // main_ettoday();
 });
