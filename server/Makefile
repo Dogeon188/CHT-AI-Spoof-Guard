@@ -6,7 +6,6 @@ MAIN_LOC = app.main:main
 ARG_HOST = --host $(HOST_NAME) --port $(HOST_PORT)
 
 install:
-	conda env create -f environment.yml
 	conda activate aiguard_env
 
 update:

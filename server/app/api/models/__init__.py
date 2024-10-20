@@ -5,5 +5,5 @@ __all__ = [
     "SpoofDetectResponse",
     "TextImageRelationRequest",
     "TextImageRelationResponse",
-    "ImageModel",
+    "ImageModel"
 ]
